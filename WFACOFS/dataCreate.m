@@ -7,7 +7,7 @@ function [agents] = dataCreate(numAgents,numFeatures,minPercentage,maxPercentage
     fprintf('featureNum:%d\n',numFeatures);
     agents=zeros(numAgents,numFeatures);
     for loop1=1:numAgents
-        curFeatures=(min) + int16(abs(rand*(max-min)));
+        curFeatures=(min) + int16(abs(rand*(max-min)));        
         temp=rand(1,numFeatures);
         [~,temp]=sort(temp);
         for loop2=1:curFeatures

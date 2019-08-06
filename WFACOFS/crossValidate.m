@@ -1,8 +1,11 @@
-function [finalPopulation,finalAccuracy]=crossValidate(train,trainLabel,agent,classifierType,paramValue,fold)
+function [finalPopulation,finalAccuracy]=crossValidate(agent,classifierType,paramValue,fold)
+    
+    global train trainLabel 
+    
     rng('default');
     numAgents=size(agent,1);
     rows=size(train,1);
-    selection=createDivision(trainLabel,fold);    
+    selection=createDivision();    
     finalAccuracy=zeros(1,numAgents);    
     finalPopulation=agent;
     for loop1=1:numAgents
@@ -32,7 +35,8 @@ function [finalPopulation,finalAccuracy]=crossValidate(train,trainLabel,agent,cl
     finalPopulation=finalPopulation(index,:);
 end
 
-function [selection] = createDivision(trainLabel,fold)
+function [selection] = createDivision()
+    global trainLabel fold
     rows = size(trainLabel,1);
     sizeTraining=size(trainLabel,1);
     labels=zeros(1,sizeTraining);
@@ -42,7 +46,7 @@ function [selection] = createDivision(trainLabel,fold)
     maxLabelNum = max(labels);
     selection=zeros(1,rows);
     for loop1=1:maxLabelNum
-        count1=sum(labels(:)==loop1);
+        count1=sum(labels(:)==loop1);        
         samplesPerFold=int16(floor((count1/fold)));
         for loop2=1:fold
             count=0;

@@ -7,20 +7,20 @@
 %                 and Ajith Abraham.                                %
 %                 "A wrapper-filter feature selection technique     %
 %                 based on ant colony optimization."                %
-%                 Neural Computing and Applications: 1-19.          %                                                %
+%                 Neural Computing and Applications: 1-19.          %                                                
 %                                                                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function[] = main(datasetName,numAgents,numIteration,numRuns,classifierType,paramValue)
+    warning off;
+    global train trainLabel test testLabel fold
+    
     filePath = strcat('Data/',datasetName,'/',datasetName,'_');
-    train = importdata(strcat(filePath,'train.mat'));
-    train = train.input;
-    trainLabel = importdata(strcat(filePath,'train_label.mat'));   
-    trainLabel = trainLabel.input1;
-    test = importdata(strcat(filePath,'test.mat'));
-    test = test.test;
-    testLabel = importdata(strcat(filePath,'test_label.mat'));     
-    testLabel = testLabel.test1;
+    data = importdata(strcat(filePath,'data.mat'));
+    train = data.train;
+    trainLabel = data.trainLabel;       
+    test = data.test;    
+    testLabel = data.testLabel;         
     simMatrix=load(strcat('Data/simMatrix/simMatrix_',datasetName,'.mat'));
     simMatrix=simMatrix.matrix;
     
@@ -32,8 +32,8 @@ function[] = main(datasetName,numAgents,numIteration,numRuns,classifierType,para
     numFeatures=size(train,2);
     mean=numFeatures*.75;
     prevEntry=1;
-    minFeaturePercentage=30;
-    maxFeaturePercentage=80;
+    minFeaturePercentage=20;
+    maxFeaturePercentage=50;
     fold=3;
     
     for runNo=1:numRuns
@@ -42,14 +42,16 @@ function[] = main(datasetName,numAgents,numIteration,numRuns,classifierType,para
         population=dataCreate(numAgents,numFeatures,minFeaturePercentage,maxFeaturePercentage);
 
         memory.population=zeros(2*numAgents,numFeatures);
-        memory.accuracy=zeros(1,2*numAgents);
-
+        memory.accuracy=zeros(1,2*numAgents);        
+        memory.finalPopulation=zeros(0,0);
+        memory.finalAccuracy=zeros(0,0);
+        
         average=zeros(1,numIteration);
         pheromone=pheromone+0.1; 
         tic
         for iterNo=1:numIteration
             mkdir(['Results/' datasetName '/Run_' int2str(runNo)],['Iteration_' int2str(iterNo)]);
-            [population,accuracy]=crossValidate(train,trainLabel,population,classifierType,paramValue,fold);            
+            [population,accuracy]=crossValidate(population,classifierType,paramValue,fold);                
             pheromone=generatePheromone(population,accuracy,pheromone,phi,decay);
             average(1,iterNo)=sum(accuracy)/numAgents;
             for agentNo=1:numAgents
@@ -78,7 +80,8 @@ function[] = main(datasetName,numAgents,numIteration,numRuns,classifierType,para
                 end
                 population(agentNo,:)=temp;
             end
-            memory=updateMemory(memory,population,accuracy);            
+            memory=updateMemory(memory,population,accuracy);
+            displayMemory(memory);
             mean=sum(memory.accuracy*sum(memory.population,2))/sum(memory.accuracy);                  
             mean=mean+(mean*0.1); 
 %             fprintf('Mean-%f\n',mean);
@@ -86,9 +89,9 @@ function[] = main(datasetName,numAgents,numIteration,numRuns,classifierType,para
             save(saveFileName,'memory');
         end
         time=toc;
-        [population,accuracy]=crossValidate(train,trainLabel,population,classifierType,paramValue,fold);
+        [population,accuracy]=crossValidate(population,classifierType,paramValue,fold);
         memory=updateMemory(memory,population,accuracy);
-        [memory.finalPopulation,memory.finalAccuracy]=populationRank(train,trainLabel,test,testLabel,population,classifierType,paramValue);
+        [memory.finalPopulation,memory.finalAccuracy]=populationRank(population,classifierType,paramValue);
         displayMemory(memory);
         mkdir(['Results/' datasetName '/Run_' int2str(runNo)],['Final']);
         saveFileName = strcat('Results/',datasetName,'/Run_',int2str(runNo),'/Final/',datasetName,'_result_',methodName,'_pop_',int2str(numAgents),'_iter_',int2str(numIteration),'_',classifierType,'_',int2str(paramValue),'.mat');
@@ -151,9 +154,17 @@ function [value]=featureProbability(ant,simMatrix,pheromone,prev,pos,alpha,beta)
 end
 
 function []=displayMemory(memory)
-    numAgents=size(memory.finalAccuracy,2);
-    disp('Memory - ');
-    for loop=1:numAgents
-        fprintf('numFeatures - %d\tAccuracy - %f\n',sum(memory.finalPopulation(loop,:)),memory.finalAccuracy(loop));
+    
+    numAgents=size(memory.accuracy,2);    
+    disp('Intermediate Memory - ');
+    for loop=1:numAgents/2
+        fprintf('numFeatures - %d\tAccuracy - %f\n',sum(memory.population(loop,:)),memory.accuracy(loop));
     end
+    numAgents=size(memory.finalAccuracy,2);
+    if (numAgents > 0)
+        disp('Final Memory - ');
+        for loop=1:numAgents
+            fprintf('finalNumFeatures - %d\tfinalAccuracy - %f\n',sum(memory.finalPopulation(loop,:)),memory.finalAccuracy(loop));
+        end
+    end    
 end
