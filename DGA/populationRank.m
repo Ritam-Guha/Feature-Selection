@@ -1,4 +1,6 @@
-function [population,accuracy]=populationRank(train,trainLabel,test,testLabel,population,classifierType,paramValue)
+function [population,accuracy]=populationRank(population,classifierType,paramValue)
+
+global train trainLabel test testLabel
 rng('shuffle');
 [row,col]=size(population);
 temp=zeros(1,col);

@@ -13,7 +13,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function[] = main(datasetName,numAgents,numIteration,numRuns,classifierType,paramValue)    
-    
+    warning off;
     global train trainLabel test testLabel 
     rng('shuffle');
     filePath = strcat('Data/',datasetName,'/',datasetName,'_');
@@ -71,7 +71,7 @@ function[] = main(datasetName,numAgents,numIteration,numRuns,classifierType,para
         time=toc;
         [population,accuracy]=crossValidate(population,classifierType,paramValue,fold);
         memory=updateMemory(memory,population,accuracy);
-        [memory.finalPopulation,memory.finalAccuracy]=populationRank(train,trainLabel,test,testLabel,population,classifierType,paramValue);
+        [memory.finalPopulation,memory.finalAccuracy]=populationRank(population,classifierType,paramValue);
         displayMemory(memory);
         mkdir(['Results/' datasetName '/Run_' int2str(runNo)],'Final');
         saveFileName = strcat('Results/',datasetName,'/Run_',int2str(runNo),'/Final/',datasetName,'_result_',methodName,'_pop_',int2str(numAgents),'_iter_',int2str(numIteration),'_',classifierType,'_',int2str(paramValue),'.mat');
