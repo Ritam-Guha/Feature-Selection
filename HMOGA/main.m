@@ -23,7 +23,7 @@ function[] = main(datasetName,numAgents,numIteration,numRuns,classifierType,para
     testLabelTotal = data.testLabel;  
         
     %initialize your variable here
-    methodName='WFACOFS';    
+    methodName='HMOGA';    
     
     for runNo=1:numRuns
         mkdir(['Results/' datasetName '/'],['Run_' int2str(runNo)]);       
