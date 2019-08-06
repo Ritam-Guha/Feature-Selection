@@ -1,5 +1,6 @@
-function[memory] = GA(train,trainLabel,test,testLabel,numAgents,numIteration,classifierType,paramValue)    
+function[memory] = GA(numAgents,numIteration,classifierType,paramValue)    
     
+    global test
     numFeatures=size(test,2);
     %initialize your variable here
     methodName='GA';
@@ -13,10 +14,12 @@ function[memory] = GA(train,trainLabel,test,testLabel,numAgents,numIteration,cla
 
     memory.population=zeros(2*numAgents,numFeatures);
     memory.accuracy=zeros(1,2*numAgents);
+    memory.finalPopulation=zeros(0,0);
+    memory.finalAccuracy=zeros(0,0);
 
     tic
     for iterNo=1:numIteration        
-        [population,accuracy]=crossValidate(train,trainLabel,population,classifierType,paramValue,fold);                      
+        [population,accuracy]=crossValidate(population,classifierType,paramValue,fold);                      
         limit = randi(mcross-2,1)+2;
         for loop1=1:limit                  
             accuracyCS(1:numAgents)=accuracy(1:numAgents);
@@ -31,15 +34,16 @@ function[memory] = GA(train,trainLabel,test,testLabel,numAgents,numIteration,cla
             secondParentId=find(accuracyCS>rand(1),1,'first');             
             probCross=rand(1);
             probMutation=rand(1);
-            [population,accuracy]=crossover(train,trainLabel,population,firstParentId,secondParentId,probCross,probMutation,accuracy,classifierType,paramValue,fold);                                        
+            [population,accuracy]=crossover(population,firstParentId,secondParentId,probCross,probMutation,accuracy,classifierType,paramValue,fold);                                        
         end
 
-        memory=updateMemory(memory,population,accuracy);                     
+        memory=updateMemory(memory,population,accuracy); 
+        displayMemory(memory);
     end
     time=toc;
-    [population,accuracy]=crossValidate(train,trainLabel,population,classifierType,paramValue,fold);
+    [population,accuracy]=crossValidate(population,classifierType,paramValue,fold);
     memory=updateMemory(memory,population,accuracy);
-    [memory.finalPopulation,memory.finalAccuracy]=populationRank(train,trainLabel,test,testLabel,population,classifierType,paramValue);
+    [memory.finalPopulation,memory.finalAccuracy]=populationRank(population,classifierType,paramValue);
     displayMemory(memory);    
     toc
    
@@ -64,9 +68,17 @@ function [memory]=updateMemory(memory,population,accuracy)
 end
 
 function []=displayMemory(memory)
-    numAgents=size(memory.finalAccuracy,2);
-    disp('Memory - ');
-    for loop=1:numAgents
-        fprintf('numFeatures - %d\tAccuracy - %f\n',sum(memory.finalPopulation(loop,:)),memory.finalAccuracy(loop));
+    
+    numAgents=size(memory.accuracy,2);    
+    disp('Intermediate Memory - ');
+    for loop=1:numAgents/2
+        fprintf('numFeatures - %d\tAccuracy - %f\n',sum(memory.population(loop,:)),memory.accuracy(loop));
     end
+    numAgents=size(memory.finalAccuracy,2);
+    if (numAgents > 0)
+        disp('Final Memory - ');
+        for loop=1:numAgents
+            fprintf('finalNumFeatures - %d\tfinalAccuracy - %f\n',sum(memory.finalPopulation(loop,:)),memory.finalAccuracy(loop));
+        end
+    end    
 end

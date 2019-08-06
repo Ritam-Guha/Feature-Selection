@@ -1,4 +1,10 @@
-function [population,accuracy]=populationRank(train,trainLabel,test,testLabel,population,classifierType,paramValue)
+function [population,accuracy]=populationRank(population,classifierType,paramValue)
+
+global trainTotal trainLabelTotal testTotal testLabelTotal
+train=trainTotal;
+trainLabel=trainLabelTotal;
+test=testTotal;
+testLabel=testLabelTotal;
 rng('shuffle');
 [row,col]=size(population);
 temp=zeros(1,col);
@@ -20,9 +26,9 @@ accuracy=zeros(1,row);
             end                   
         end
     end
-% fprintf('\nPopulation now - \n');
-% for loop4=1:row
-%     fprintf('accuracy - %f\tCount- %d\n',accuracy(1,loop4),sum(population(loop4,1:col)==1));
-% end
-% fprintf('\n');
+fprintf('\nPopulation now - \n');
+for loop4=1:row
+    fprintf('accuracy - %f\tCount- %d\n',accuracy(1,loop4),sum(population(loop4,1:col)==1));
+end
+fprintf('\n');
 end

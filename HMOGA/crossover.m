@@ -1,4 +1,4 @@
-function [population,accuracy]=crossover(train,trainLabel,population,firstParentId,secondParentId,probCross,probMutation,accuracy,classifierType,paramValue,fold)
+function [population,accuracy]=crossover(population,firstParentId,secondParentId,probCross,probMutation,accuracy,classifierType,paramValue,fold)
     rng('shuffle');
     [row,col]=size(population);
     child(1,1:col)=population(firstParentId,:);
@@ -24,8 +24,8 @@ function [population,accuracy]=crossover(train,trainLabel,population,firstParent
         end
     end
 
-    [child(1,:),accuracyFirstChild]=crossValidate(train,trainLabel,child(1,:),classifierType,paramValue,fold);
-    [child(2,:),accuracySecondChild]=crossValidate(train,trainLabel,child(2,:),classifierType,paramValue,fold);
+    [child(1,:),accuracyFirstChild]=crossValidate(child(1,:),classifierType,paramValue,fold);
+    [child(2,:),accuracySecondChild]=crossValidate(child(2,:),classifierType,paramValue,fold);
     for loop = 1:row
         if(chromosomecomparator(population(loop,1:col),accuracy(loop),child(1,1:col),accuracyFirstChild)<0)           
             population(loop,1:col)=child(1,1:col);
