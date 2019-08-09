@@ -1,9 +1,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  ____ source codes version 1.0                                    %
+%  HFE source codes version 1.0                                     %
 %                                                                   %
 %  Developed in MATLAB R2016a                                       %
 %                                                                   %
-%   Main Paper:                                                     %
+%                                                                   %
 %                                                                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -19,7 +19,7 @@ function[] = main(datasetName,numAgents,numIteration,numRuns,classifierType,para
     
     numFeatures=size(test,2);
     %initialize your variable here
-    methodName='';
+    methodName='HFE';
     minFeaturePercentage=30;
     maxFeaturePercentage=80;
     fold=3;
