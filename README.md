@@ -1,5 +1,5 @@
 # Feature-Selection
-It contains some of the novel feature selection algorithms I've implemented
+It contains some of the feature selection algorithms I've implemented
 
 BGSA: Binary Gravitational Search Algorithm
 BGSO: Binary Genetic Swarm Optimization 
