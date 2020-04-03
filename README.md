@@ -10,3 +10,4 @@ GA: Genetic Algorithm
 HFE: Histogram based Fuzzy Ensemble (Created myself)
 HMOGA: Hostogram based Multi-Objective Genetic Algorithm (Created myself)
 WFACOFS: Wrapper Filter Ant Colony Optimization for Feature Selection (Created myself)
+MICC: Mutually Informed Correlation Coefficient
