@@ -1,4 +1,4 @@
-# WFSACOFS: Wrapper Filter based Ant Colony Optmization for Feature Selection
+# WFACOFS: Wrapper Filter based Ant Colony Optmization for Feature Selection
 
 Code for paper - A wrapper-filter feature selection technique based on ant colony optimization
 
