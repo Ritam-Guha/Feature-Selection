@@ -1,5 +1,5 @@
 # Feature-Selection
-It contains some of the feature selection algorithms I've implemented
+It contains codes for some of the feature selection algorithms I've implemented
 
 ## Algorithms
 * BGSA: Binary Gravitational Search Algorithm
